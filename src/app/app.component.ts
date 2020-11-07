@@ -1,18 +1,18 @@
 import { cities } from './mockdata';
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable, combineLatest, of, iif, from, concat } from 'rxjs';
-import { map, mergeMap, tap } from 'rxjs/operators'
+import { Observable } from 'rxjs';
+import { map, tap, } from 'rxjs/operators'
 
 @Component({
     selector: 'app-root',
     template: `
         <input type="text"
             placeholder="Pick one"
+            autofocus
             matInput
             [formControl]="myControl"
-            [matAutocomplete]="auto"
-            (input)="filter($event)">
+            [matAutocomplete]="auto">
         <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let city of filteredCities$ | async" [value]="city">
                 {{city}}
@@ -28,13 +28,11 @@ export class AppComponent implements OnInit{
 
     ngOnInit(): void {
         this.filteredCities$ = this.myControl.valueChanges.pipe(
-            tap( text => console.log('tap text', text) ),
             map( (text:string) => this.filter(text) )
         )
     }
 
     filter(text:string): string[] {
-        console.log('filter text', text)
         return cities.filter( (city:string) => city.toLowerCase().includes(text.toLowerCase()))
     }
 
